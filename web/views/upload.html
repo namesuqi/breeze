@@ -1,0 +1,86 @@
+<% include header.html %>
+    <%- include("./main-body-header.html") %>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">文件上传</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        
+                        <div class="panel-body">
+                            <div class="alert alert-danger alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                默认上传的Peer与LF的文件名应为ys_service_static，Livepush的文件名应为livepush。
+                            </div>
+                            <div class="col-lg-4">
+                                <form role="form" action="/upload/peer" id="upload-form" method="post" enctype="multipart/form-data">
+                                    <div class="form-group col-lg-6">
+                                        <label>
+                                            请选择上传文件类型:
+                                            <select class="form-control input-sm" id="upload-select" onchange="changeAction()">
+                                                <!-- <option value=""></option> -->
+                                                <option value="Peer">Peer</option>
+                                                <option value="LF">LF</option>
+                                                <option value="LivePush">LivePush</option>
+                                            </select>
+                                            <br>
+                                        </label>
+                                        <input type="file" name="upload-file">
+                                        <br>
+                                        <button type="submit" class="btn btn-outline btn-primary btn-lg">上传</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-6">
+                                <% if (msg) { %>
+                                    <div class="panel panel-green">
+                                        <div class="panel-heading">
+                                            上传信息
+                                        </div>
+                                        <div class="panel-body">
+                                            <p><%= msg %></p>
+                                        </div>
+                                    </div>
+                                <% }else{ %>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            上传信息
+                                        </div>
+                                        <div class="panel-body">
+                                            <pre>NULL</pre>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <!-- panel body -->
+                    </div>
+                    <!-- panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    <%- include("./main-body-tail.html") %>
+    <script type="text/javascript">
+        function changeAction() {
+
+            var select = document.getElementById('upload-select');
+            var form = document.getElementById('upload-form');
+            var thisValue = select.options[select.selectedIndex].value;
+
+            if (thisValue === "Peer"){
+                form.setAttribute('action', '/upload/peer');
+            }else if (thisValue === "LF"){
+                form.setAttribute('action', '/upload/lf');
+            }else if (thisValue === "LivePush"){
+                form.setAttribute('action', '/upload/livepush');
+            }else{
+                form.setAttribute('action', '');
+            }
+        };
+    </script>
+<% include footer.html %>

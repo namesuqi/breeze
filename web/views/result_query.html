@@ -1,0 +1,164 @@
+<% include header.html %>
+    <%- include("./main-body-header.html") %>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">结果查询</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12">
+                    <div class="col-lg-4">
+                        <form>
+                            <label>过滤参数：</label>
+                            <div class="form-group input-group">
+                                <span class="input-group-addon">数据范围：</span>
+                                <input id="hour" class="form-control"  type="text" value=<%=hour%> size="2">
+                                <span class="input-group-addon">(xx小时内）</span>
+                            </div>
+                            <div class="form-group input-group">
+                                <span class="input-group-addon">雷锋数量：</span>
+                                <input id="leifeng" class="form-control"  type="text" value=<%=leifeng%> size="2">
+                                <span class="input-group-addon">(个)</span>
+                            </div>
+                            <div class="form-group input-group">
+                                <span class="input-group-addon">播放时间：</span>
+                                <input id="playDuration" class="form-control"  type="text" value=<%=playDuration%> size="2">
+                                <span class="input-group-addon">(秒)</span>
+                            </div>
+                            <div class="form-group input-group">
+                                <div class="form-group">
+                                    <label>排序方式：</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="buffer_number" value="buffer_number" checked="">
+                                        卡顿次数
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="total_buffer_time" value="total_buffer_time">
+                                        总卡顿时长
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="max_buffering_time" value="max_buffering_time">
+                                        最长卡顿
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group input-group">
+                                <button class="btn btn-outline btn-primary btn-lg btn-block" type="button" onclick="getResult(highLight)">过滤</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <!-- <button class="btn btn-primary" type="button" onclick="reset();">重置</button> -->
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>查询信息展示：</label>
+                        <div class="panel panel-success">
+                            <div class="panel-heading"></div>
+                            <div class="panel-body">
+                                <p style="font-size: 24">共过滤查询出<%= rows.length %>行  （查询排序条件会出现黄色高亮提示, 最大卡顿超过3s标红）</p>
+                            </div>
+                            <div class="panel-footer">结果展现在table中，雷锋数：0 or 70, 播放时长3600 or 300, 按需排序~</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                数据表展示：
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>行号</th>
+                                        <th>测试开始时间戳</th>
+                                        <th>网络延迟</th>
+                                        <th>丢包率</th>
+                                        <th>起播时间</th>
+                                        <th>播放时长</th>
+                                        <th>p2p占比</th>
+                                        <th>雷锋数</th>
+                                        <th id="tb_buffer_number">卡顿次数</th>
+                                        <th id="tb_total_buffer_time">总卡顿时长</th>
+                                        <th id="tb_max_buffering_time">最长卡顿</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <% var line = 0; %>
+                                    <% rows.forEach(function(item) {%>
+                                    <% line = line+1; %>
+                                    <tr>
+                                        <td><%= line %></td>
+                                        <td><%=item.case_start_time %></td>
+                                        <td><%=item.delay %> ms</td>
+                                        <td><%=item.loss_rate %>%</td>
+                                        <td><%=item.first_image_time %> s</td>
+                                        <td><%=item.play_duration %> s</td>
+                                        <td><%=item.p2p_percent %>%</td>
+                                        <td><%=item.lf_number %></td>
+                                        <td><%=item.buffer_number %></td>
+                                        <td><%=item.total_buffer_time %> s</td>
+
+                                        <% if(item.max_buffering_time > 3){ %>
+                                            <td style="color: red"><%=item.max_buffering_time %></td>
+                                        <% }else{ %>
+                                            <td><%=item.max_buffering_time %></td>
+                                        <% } %>
+                                    </tr>
+                                    <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    <%- include("./main-body-tail.html") %>
+    <script>
+    //    $("#max_buffering_time").attr("checked", "checked");
+    var sort = "<%= sort %>" ;   // 这个地方超级坑爹
+    if (sort === "buffer_number"){
+        $("#buffer_number").prop("checked", "checked");
+    }
+    if (sort === "total_buffer_time"){
+        $("#total_buffer_time").prop("checked", "checked");
+    }
+    if (sort === "max_buffering_time"){
+        $("#max_buffering_time").prop("checked", "checked");
+    }
+    </script>
+    <script type="text/javascript">
+        function getResult(callback) {
+            var hour = $("#hour").val();
+            var leifeng = $("#leifeng").val();
+            var playDuration = $("#playDuration").val();
+            var sort = $("input[name='inlineRadioOptions']:checked").val();
+            var arr = ['buffer_number', 'total_buffer_time', 'max_buffering_time'];
+
+
+            if (hour=="") {
+                hour =24;
+            }
+            if (leifeng=="") {
+                leifeng =0;
+            }
+            if (playDuration=="") {
+                playDuration =3600;
+            }
+
+            if ( arr.indexOf(sort) != -1 ){
+                callback(sort);
+            }
+            window.self.location = "?hour="+hour+"&leifeng="+leifeng+"&playDuration="+playDuration +"&sort="+sort;
+        };
+
+        function highLight(valID) {
+            var cell = document.getElementById('tb_' + valID);
+            cell.setAttribute('style', 'background: yellow');
+        }
+        function reset() {
+            window.self.location = "/result_query";
+        }
+    </script>
+<% include footer.html %>

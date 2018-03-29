@@ -1,0 +1,60 @@
+<% include header.html %>
+    <%- include("./main-body-header.html") %>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">执行控制</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="col-lg-4">
+                                <a href="/control/stop_peer"><p class="fa fa-power-off"> StopPeer</p></a>
+                                </br>
+                                <a href="/control/stop_lf"><p class="fa fa-power-off"> StopLF</p></a>
+                                </br>
+                                <a href="/control/start_lf"><p class="fa fa-play-circle-o"> StartLF</p></a>
+                                <br>
+                                <a href="/control/join_lf"><p class="fa fa-arrow-circle-o-up"> JoinLF</p></a>
+                                </br></br>
+                                <p class="fa fa-play-circle-o"> StartPeer:</p>
+                                <form action="/control/start_peer" method="get">
+                                    <div class="form-group input-group col-lg-6">
+                                        <span class="input-group-addon">播放时长:</span>
+                                        <input type="text" name="playDuration" class="form-control" size="2">
+                                        <span class="input-group-addon">s</span>
+                                    </div>
+                                    <button class="btn btn-primary">StartPeer</button>
+                                </form>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        输出信息
+                                    </div>
+                                    <div class="panel-body">
+                                        <% if (msg) { %>
+                                            <!-- <p><%= msg %></p> -->
+                                            <!-- <textarea style="margin: 0px; width: 100%; height: 336px;" readonly><%= msg %></textarea> -->
+                                            <pre><%= msg %></pre>
+                                        <% }else{ %>
+                                            <!-- <p>NULL</p> -->
+                                            <!-- <textarea style="margin: 0px; width: 100%; height: 336px;" readonly>NULL</textarea> -->
+                                            <pre>NULL</pre>
+                                        <% } %>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                        <!-- panel body -->
+                    </div>
+                    <!-- panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+    <%- include("./main-body-tail.html") %>
+<% include footer.html %>

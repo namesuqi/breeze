@@ -1,0 +1,10 @@
+*.pyc
+result/log.html
+result/output.xml
+result/report.html
+*.xml
+.idea/*
+liveclient_static
+ys_service_static
+.idea
+misc/data/cookie/*
